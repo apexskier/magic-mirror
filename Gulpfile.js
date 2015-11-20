@@ -38,7 +38,7 @@ function format() {
 }
 
 function html() {
-    return gulp.src(paths.html, {since: gulp.lastRun(html)})
+    return gulp.src(paths.html)
         .pipe(gulp.dest('dst')) // change file path so relative works
         .pipe(inject(gulp.src(paths.sources, {
             read: false
@@ -47,13 +47,13 @@ function html() {
 }
 
 function media() {
-    return gulp.src(paths.media, {since: gulp.lastRun(media)})
+    return gulp.src(paths.media)
         .pipe(imagemin())
         .pipe(gulp.dest('dst/media'));
 }
 
 function scripts() {
-    return gulp.src(paths.scripts, {since: gulp.lastRun(scripts)})
+    return gulp.src(paths.scripts)
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(sourcemaps.init())
@@ -74,7 +74,7 @@ function styles() {
 }
 
 function validateGulp() {
-    return gulp.src(paths.gulp, {since: gulp.lastRun(validateGulp)})
+    return gulp.src(paths.gulp)
         .pipe(eslint())
         .pipe(eslint.format());
 }
@@ -84,5 +84,5 @@ function watch() {
     gulp.watch(paths.media, media);
     gulp.watch(paths.scripts, scripts);
     gulp.watch(paths.styles, styles);
-    gulp.watch(paths.sources, html);
+    gulp.watch([paths.sources, paths.html], html);
 }

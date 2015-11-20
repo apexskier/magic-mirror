@@ -7,8 +7,18 @@ Run `npm install` to get ready, then `gulp` to start working. The site will be
 built in the `dst` directory. Put your SASS in `src/styles` and your javascript
 in `src/scripts`.
 
-Not finished yet, media's not handled completely and javascript dependancies
-aren't added automatically.
+Gulp auto builds as you code. Any scripts or styles generated will
+automatically be inserted into your html files.
+
+## Styles
+
+Styles are written in [SCSS](http://sass-lang.com/). A super basic reset file
+is provided. Gulp will automatically compile, prefix, and minify.
+
+## Scripts
+
+Scripts can be written using ES6. They will be compiled, combined, and uglified
+into a file called `index.js`.
 
 ## [GitHub Pages](https://pages.github.com)
 

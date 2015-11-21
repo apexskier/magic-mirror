@@ -15,6 +15,9 @@ automatically be inserted into your html files.
 Styles are written in [SCSS](http://sass-lang.com/). A super basic reset file
 is provided. Gulp will automatically compile, prefix, and minify.
 
+A csscomb config is provided. Run `csscomb src/styles` to reformat your scss
+nicely.
+
 ## Scripts
 
 Scripts can be written using ES6. They will be compiled, combined, and uglified

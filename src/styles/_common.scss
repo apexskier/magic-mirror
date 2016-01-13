@@ -1,3 +1,80 @@
+@import "variables";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  padding-top: $screen-padding-top;
+  padding-bottom: $screen-padding-bottom;
+  padding-left: $screen-padding-left;
+  padding-right: $screen-padding-right;
+}
+
 body {
   font-family: system, -apple-system, ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", helvetica, sans-serif;
+  background-color: #000;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+
+  &.debug {
+    border: 1px dashed #fff;
+  }
+}
+
+.loading {
+  $size: 40px;
+
+  width: $size;
+  height: $size;
+
+  position: relative;
+  margin: 100px auto;
+
+  &:before,
+  &:after {
+    display: block;
+    content: '';
+    width: $size;
+    height: $size;
+    border-radius: (($size / 2) + 2);
+    position: absolute;
+    opacity: 0.6;
+    animation: sk-bounce 2s infinite ease-in-out;
+    border: 2px solid;
+  }
+
+  &:before {
+    background-color: #fff;
+  }
+
+  &:after {
+    border-color: #fff;
+    animation-delay: -1s;
+  }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0.0);
+    opacity: 0;
+  } 50% {
+    transform: scale(1.0);
+    opacity: 0.6;
+  }
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }

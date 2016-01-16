@@ -21,18 +21,21 @@ body {
   width: 100%;
 
   &.debug {
-    border: 1px dashed #fff;
+    &,
+    .component {
+      border: 1px dashed #fff;
+    }
   }
 }
 
 .loading {
   $size: 40px;
 
-  width: $size;
-  height: $size;
+  width: $size + (2px * 2);
+  height: $size + (2px * 2);
 
   position: relative;
-  margin: 100px auto;
+  margin: 0 auto;
 
   &:before,
   &:after {

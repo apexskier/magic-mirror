@@ -13,6 +13,7 @@
     "eol-last": 1,
     "indent": [1, 4],
     "no-extra-parens": 1,
+    "no-inner-declarations": 0,
     "no-irregular-whitespace": 1,
     "no-multi-spaces": 1,
     "no-multiple-empty-lines": 1,

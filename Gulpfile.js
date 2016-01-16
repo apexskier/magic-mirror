@@ -1,17 +1,17 @@
 var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
-    babel = require('gulp-babel'),
     browserify = require('browserify'),
+    buffer = require('vinyl-buffer'),
     csscomb = require('gulp-csscomb'),
     del = require('del'),
     eslint = require('gulp-eslint'),
     glob = require('glob'),
+    gutil = require('gulp-util'),
     imagemin = require('gulp-imagemin'),
     inject = require('gulp-inject'),
     sass = require('gulp-sass'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
-    streamify = require('gulp-streamify'),
     uglify = require('gulp-uglify'),
 
     paths = {
@@ -23,7 +23,7 @@ var gulp = require('gulp'),
         sources: ['dst/**/*.js', 'dst/**/*.css']
     };
 
-gulp.task('scripts', gulp.series(compileScripts, bundleScripts));
+gulp.task('scripts', gulp.series(checkScripts, bundleScripts));
 gulp.task('build', gulp.series(clean, gulp.parallel(media, 'scripts', styles), html));
 gulp.task(clean);
 gulp.task(format);
@@ -60,18 +60,23 @@ function media() {
         .pipe(gulp.dest('dst/media'));
 }
 
-function compileScripts() {
-    return eslintStream(paths.scripts, {since: gulp.lastRun(compileScripts)})
-        .pipe(sourcemaps.init())
-        .pipe(babel())
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('tmp'));
+function checkScripts() {
+    return eslintStream(paths.scripts, {since: gulp.lastRun(checkScripts)});
 }
 
 function bundleScripts() {
-    return browserify(glob.sync('tmp/**/[^_]*.js'), {debug: true}).bundle()
+    return browserify(glob.sync(paths.scripts), {
+        debug: true
+    }).transform('babelify', {
+        presets: ['es2015', 'react']
+    }).bundle().on('error', function(err) {
+        gutil.log(err.toString());
+    })
         .pipe(source('index.js'))
-        .pipe(streamify(uglify()))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        // .pipe(streamify(uglify()))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest('dst'));
 }
 

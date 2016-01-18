@@ -1,0 +1,59 @@
+$row-height: 32px;
+
+.weather {
+  .hourly {
+    width: 100%;
+
+    tr {
+      height: $row-height;
+    }
+
+    .change .icon:before {
+      border-top: 1px solid transparentize(#fff, .5);
+    }
+
+    .icon {
+      text-align: left;
+      border-left: 3px solid;
+
+      &.uphalf canvas {
+        position: relative;
+        top: -($row-height / 2);
+      }
+    }
+
+    .time, .temp {
+      text-align: right;
+    }
+
+    .prob {
+      text-align: left;
+    }
+
+    .temp {
+      padding-right: 3px;
+    }
+
+    .prob {
+      padding-left: 3px;
+    }
+
+    .temp, .prob {
+      &.min {
+        font-weight: 300;
+      }
+
+      &.less {
+        font-weight: 500;
+      }
+
+      &.more {
+        font-weight: 700;
+      }
+
+      &.max {
+        font-weight: 900;
+      }
+    }
+  }
+}

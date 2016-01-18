@@ -1,42 +1,101 @@
 #root {
   height: 100%;
   width: 100%;
+  perspective: 600px;
+  perspective-origin: center;
+}
 
-  .container {
-    width: 100%;
-    height: 100%;
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  align-content: stretch;
+
+  &.slide-right-in {
+    animation: slide-right .6s ease-in-out;
+    animation-direction: reverse;
+  }
+
+  &.slide-right-out {
+    animation: slide-right .6s ease-in-out;
+  }
+
+  &.slide-left-in {
+    animation: slide-left .6s ease-in-out;
+  }
+
+  &.slide-left-out {
+    animation: slide-left .6s ease-in-out;
+    animation-direction: reverse;
+  }
+
+  &.slide-center-in {
+    animation: slide-center .6s ease-in-out;
+    animation-direction: reverse;
+  }
+
+  &.slide-center-out {
+    animation: slide-center .6s ease-in-out;
+  }
+
+  .row {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-around;
     align-items: stretch;
     align-content: stretch;
 
-    .row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: stretch;
-      align-content: stretch;
+    > * {
+      flex: 1;
+      overflow: hidden;
+    }
 
-      .empty {
-        min-width: 1px;
-        min-height: 1px;
-      }
+    .empty {
+      min-width: 1px;
+      min-height: 1px;
     }
   }
+}
 
-  .even > * {
-    flex: 1;
+.center {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+
+  > div {
+    margin: 0 auto;
   }
+}
 
-  .center {
-    display: flex;
-    align-items: center;
-    align-content: center;
-    text-align: center;
-    
-    > div {
-      margin: 0 auto;
-    }
+@keyframes slide-right {
+  from {
+    transform: translateX(0) translateZ(0) rotateY(0);
+  }
+  to {
+    transform: translateX(-100%) translateZ(100px) rotateY(30deg);
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(0) translateZ(0) rotateY(0);
+  }
+  to {
+    transform: translateX(100%) translateZ(100px) rotateY(-30deg);
+  }
+}
+
+@keyframes slide-center {
+  from {
+    transform: translateZ(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateZ(600px);
+    opacity: 0;
   }
 }

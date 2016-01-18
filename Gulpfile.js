@@ -65,7 +65,7 @@ function checkScripts() {
 }
 
 function bundleScripts() {
-    return browserify(glob.sync(paths.scripts), {
+    return browserify('src/client.js', {
         debug: true
     }).transform('babelify', {
         presets: ['es2015', 'react']

@@ -26,7 +26,7 @@ var Clock = React.createClass({
     },
     render: function() {
         return (
-            <div className="clock component center component-primary"><div>{this.getTime()}</div></div>
+            <div className="clock">{this.getTime()}</div>
         );
     }
 });

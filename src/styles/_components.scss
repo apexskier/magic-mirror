@@ -1,10 +1,10 @@
 .component {
   opacity: 1;
-  transition: opacity .4s;
+  transition: opacity .5s, transform .5s, color .5s;
 
   .inactive & {
     opacity: 0.2;
-    transition: opacity 2s;
+    transition: opacity 2s, transform 2s, color 2s;
 
     &.component-primary {
       opacity: 0.8;

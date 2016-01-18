@@ -1,5 +1,7 @@
 $row-height: 32px;
 
+$icon-stripe-width: 3px;
+
 .weather {
   .hourly {
     width: 100%;
@@ -8,18 +10,86 @@ $row-height: 32px;
       height: $row-height;
     }
 
-    .change .icon:before {
-      border-top: 1px solid transparentize(#fff, .5);
-    }
-
     .icon {
       text-align: left;
-      border-left: 3px solid;
+      border-left: $icon-stripe-width solid;
+      padding-left: ($icon-stripe-width * 2);
+      position: relative;
 
-      &.uphalf canvas {
+      canvas {
         position: relative;
-        top: -($row-height / 2);
       }
+    }
+
+    .icon-visible {
+      .arrow {
+        &:after, &:before {
+          right: 100%;
+          top: 50%;
+          border-style: solid;
+          content: '';
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+          border-color: rgba(255, 255, 255, 0);
+        }
+
+        &:before {
+          border-right-color: #fff;
+          border-width: 10px;
+          margin-top: -12px;
+        }
+
+        &:after {
+          border-right-color: #000;
+          border-width: 5px;
+          margin-top: -7px;
+        }
+      }
+
+      &.icon-uphalf .arrow {
+        &:before {
+          margin-top: -27px;
+        }
+
+        &:after {
+          margin-top: -22px;
+        }
+      }
+    }
+
+    tr:first-child .icon,
+    tr:last-child .icon,
+    .icon-group-start,
+    .icon-group-end {
+      &:before {
+        content: '';
+        background: #000;
+        height: $icon-stripe-width + 1;
+        width: $icon-stripe-width;
+        display: block;
+        position: absolute;
+        left: -$icon-stripe-width;
+      }
+    }
+
+    tr:first-child .icon,
+    .icon-group-start {
+      &:before {
+        top: 0;
+      }
+    }
+
+    tr:last-child .icon,
+    .icon-group-end {
+      &:before {
+        bottom: 0;
+      }
+    }
+
+    .icon-uphalf canvas {
+      top: -($row-height / 2);
     }
 
     .time, .temp {

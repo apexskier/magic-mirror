@@ -92,7 +92,6 @@ var Weather = React.createClass({
         } else {
             var nowHours = new Date().getHours();
             if (this.props.display === 'full') {
-                var last = null;
                 var data = this.state.weather.hourly.data.slice(0, 18);
 
                 var roundProbs = data.map(d => Math.round(d.precipProbability * 100));
@@ -122,16 +121,38 @@ var Weather = React.createClass({
                 });
                 var timeIcons = {};
                 iconGroups.forEach(d => {
-                    if (d.times.length % 2 === 0) {
-                        timeIcons[d.times[d.times.length / 2]] = {
-                            icon: d.icon,
-                            classes: 'icon uphalf'
+                    if (d.times.length === 1) {
+                        timeIcons[d.times[0]] = {
+                            icon: true,
+                            classes: 'icon icon-visible icon-group-start icon-group-end'
                         };
                     } else {
-                        timeIcons[d.times[Math.floor(d.times.length / 2)]] = {
-                            icon: d.icon,
-                            classes: 'icon'
+                        timeIcons[d.times[0]] = {
+                            icon: false,
+                            classes: 'icon icon-group-start'
                         };
+                        if (d.times.length === 2) {
+                            timeIcons[d.times[1]] = {
+                                icon: true,
+                                classes: 'icon icon-visible icon-uphalf icon-group-end'
+                            };
+                        } else {
+                            timeIcons[d.times[d.times.length - 1]] = {
+                                icon: false,
+                                classes: 'icon icon-group-end'
+                            };
+                            if (d.times.length % 2 === 0) {
+                                timeIcons[d.times[d.times.length / 2]] = {
+                                    icon: true,
+                                    classes: 'icon icon-visible icon-uphalf'
+                                };
+                            } else {
+                                timeIcons[d.times[Math.floor(d.times.length / 2)]] = {
+                                    icon: true,
+                                    classes: 'icon icon-visible'
+                                };
+                            }
+                        }
                     }
                 });
 
@@ -140,10 +161,8 @@ var Weather = React.createClass({
                 console.log(timeIcons);
 
                 var hourly = data.slice(0, 18).map(d => {
-                    var change = !(last && last.icon === d.icon);
                     var prob = Math.round(d.precipProbability * 100);
                     var temp = Math.round(d.apparentTemperature);
-                    var classes = change ? 'change' : 'no-change';
 
                     var probStatus = '';
                     if (prob === probRange[0]) {
@@ -176,20 +195,22 @@ var Weather = React.createClass({
                     if (timeIcons.hasOwnProperty(d.time)) {
                         iconEl = (
                             <td className={timeIcons[d.time].classes}>
-                                <canvas className="skycon" data-skycon={d.icon} width="32" height="32"></canvas>
+                                <div className="arrow">
+                                    {timeIcons[d.time].icon ? <canvas className="skycon" data-skycon={d.icon} width="32" height="32"></canvas> : ''}
+                                </div>
                             </td>
                         );
                     }
 
                     var ret = (
-                        <tr key={d.time} className={classes}>
+                        <tr key={d.time}>
                             <td className="time">{moment(d.time * 1000).format('h a')}</td>
                             <td className={tempStatus}>{temp}℉</td>
                             {probEl}
                             {iconEl}
                         </tr>
                     );
-                    last = d;
+
                     return ret;
                 });
                 return (

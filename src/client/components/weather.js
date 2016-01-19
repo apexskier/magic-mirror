@@ -70,12 +70,18 @@ var Weather = React.createClass({
             }
         });
         this.updateIcons();
+        $(ReactDOM.findDOMNode(this)).find('.fadein-invisible').one('animationstart', function(e) {
+            $(e.target).removeClass('fadein-invisible');
+        });
     },
     componentWillUnmount: function() {
         clearInterval(this.interval);
     },
     componentDidUpdate: function() {
         this.updateIcons();
+        $(ReactDOM.findDOMNode(this)).find('.fadein-invisible').one('animationstart', function(e) {
+            $(e.target).removeClass('fadein-invisible');
+        });
     },
     updateIcons: function() {
         Array.prototype.forEach.call(ReactDOM.findDOMNode(this).querySelectorAll('.skycon'), function(el) {
@@ -159,6 +165,8 @@ var Weather = React.createClass({
                     }
                 });
 
+                var fadeinDelay = 0;
+
                 var hourly = data.slice(0, 18).map(d => {
                     var prob = Math.round(d.precipProbability * 100);
                     var temp = Math.round(d.apparentTemperature);
@@ -201,16 +209,17 @@ var Weather = React.createClass({
                         );
                     }
 
-                    var ret = (
-                        <tr key={d.time}>
+                    var classes = `fadein-invisible fadein-after-${fadeinDelay}`;
+                    fadeinDelay += 20;
+
+                    return (
+                        <tr key={d.time} className={classes}>
                             <td className="time">{moment(d.time * 1000).format('h a')}</td>
                             <td className={tempStatus}>{temp}℉</td>
                             {probEl}
                             {iconEl}
                         </tr>
                     );
-
-                    return ret;
                 });
                 return (
                     <div className="weather full">

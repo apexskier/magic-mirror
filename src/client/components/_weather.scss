@@ -127,3 +127,24 @@ $icon-stripe-width: 3px;
     }
   }
 }
+
+.fadein-invisible {
+  opacity: 0;
+}
+
+@for $delay from 0 through 50 {
+  .fadein-after-#{$delay * 10} {
+    animation-name: fadein;
+    animation-duration: .5s;
+    animation-delay: ($delay * 10ms);
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -7,6 +7,9 @@ var Clock = React.createClass({
             format: 'h:mm'
         };
     },
+    propTypes: {
+        format: React.PropTypes.string
+    },
     getInitialState: function() {
         return {
             time: moment()

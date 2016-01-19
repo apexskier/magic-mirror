@@ -13,7 +13,6 @@ $icon-stripe-width: 3px;
     .icon {
       text-align: left;
       border-left: $icon-stripe-width solid;
-      padding-left: ($icon-stripe-width * 2);
       position: relative;
 
       canvas {
@@ -22,9 +21,10 @@ $icon-stripe-width: 3px;
     }
 
     .icon-visible {
+      padding-left: ($icon-stripe-width * 4);
       .arrow {
         &:after, &:before {
-          right: 100%;
+          left: -$icon-stripe-width;
           top: 50%;
           border-style: solid;
           content: '';
@@ -36,42 +36,40 @@ $icon-stripe-width: 3px;
         }
 
         &:before {
-          border-right-color: #fff;
+          border-left-color: #fff;
           border-width: 10px;
-          margin-top: -12px;
+          margin-top: -10px;
         }
 
         &:after {
-          border-right-color: #000;
+          border-left-color: #000;
           border-width: 5px;
-          margin-top: -7px;
+          margin-top: -5px;
         }
       }
 
       &.icon-uphalf .arrow {
         &:before {
-          margin-top: -27px;
+          margin-top: -26px;
         }
 
         &:after {
-          margin-top: -22px;
+          margin-top: -21px;
         }
       }
     }
 
-    tr:first-child .icon,
-    tr:last-child .icon,
-    .icon-group-start,
-    .icon-group-end {
-      &:before {
-        content: '';
-        background: #000;
-        height: $icon-stripe-width + 1;
-        width: $icon-stripe-width;
-        display: block;
-        position: absolute;
-        left: -$icon-stripe-width;
-      }
+    tr:first-child .icon:before,
+    .icon-group-start:before,
+    tr:last-child .icon:after,
+    .icon-group-end:after {
+      content: '';
+      background: #000;
+      height: $icon-stripe-width + 1;
+      width: $icon-stripe-width;
+      display: block;
+      position: absolute;
+      left: -$icon-stripe-width;
     }
 
     tr:first-child .icon,
@@ -83,12 +81,14 @@ $icon-stripe-width: 3px;
 
     tr:last-child .icon,
     .icon-group-end {
-      &:before {
+      &:after {
         bottom: 0;
       }
     }
 
     .icon-uphalf canvas {
+      height: $row-height;
+      width: $row-height;
       top: -($row-height / 2);
     }
 

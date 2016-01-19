@@ -15,13 +15,16 @@ var Weather = React.createClass({
             tickDuration: 1000 * 60 * 5 // 5 minutes
         };
     },
+    propTypes: {
+        display: React.PropTypes.oneOf(['minimal', 'full']),
+        tickDuration: React.PropTypes.number
+    },
     getInitialState: function() {
         return {
             loading: true
         };
     },
     tick: function() {
-        console.log('tick');
         this.setState({ error: undefined });
 
         Promise.resolve($.get(`/api/weather/${this.state.lat}/${this.state.lng}`, null))
@@ -155,10 +158,6 @@ var Weather = React.createClass({
                         }
                     }
                 });
-
-                console.log(iconGroups);
-
-                console.log(timeIcons);
 
                 var hourly = data.slice(0, 18).map(d => {
                     var prob = Math.round(d.precipProbability * 100);

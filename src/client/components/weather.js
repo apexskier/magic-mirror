@@ -30,12 +30,10 @@ var Weather = React.createClass({
         Promise.resolve($.get(`/api/weather/${this.state.lat}/${this.state.lng}`, null))
             .then(response => {
                 if (this.isMounted()) {
-                    if (response.status !== 'error') {
-                        this.setState({ weather: response.data });
-                    } else {
-                        this.setState({ error: response.data });
-                    }
-                    this.setState({ loading: false });
+                    this.setState({
+                        weather: response.data,
+                        loading: false
+                    });
                 }
             }).catch(err => {
                 if (this.isMounted()) {

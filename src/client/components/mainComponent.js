@@ -4,6 +4,7 @@ var $ = require('jquery');
 
 var Clock = require('./clock');
 var Weather = require('./weather');
+var Ticker = require('./ticker');
 
 var MainComponent = React.createClass({
     getInitialState: function() {
@@ -66,11 +67,17 @@ var MainComponent = React.createClass({
             stateClasses += ' inactive';
         }
         if (this.state.state === 'center') {
-            content = (
-                <div className="row">
-                    <div className="component empty" onClick={this.focusLeft} display="minimal" />
-                    <div className="component component-primary center"><Clock /></div>
-                    <div className="component center" onClick={this.focusRight}><Weather display="minimal" /></div>
+            return (
+                <div className={stateClasses} onClick={this.goActive}>
+                    <div className="row empty"></div>
+                    <div className="row">
+                        <div className="component empty" onClick={this.focusLeft} display="minimal" />
+                        <div className="component component-primary center"><Clock /></div>
+                        <div className="component center" onClick={this.focusRight}><Weather display="minimal" /></div>
+                    </div>
+                    <div className="row empty">
+                        <div className="component center"><Ticker /></div>
+                    </div>
                 </div>
             );
         } else if (this.state.state === 'right') {

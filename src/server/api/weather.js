@@ -8,7 +8,7 @@ var apiKey = require('../../private.js').forecast;
 // 5 minute cache
 var weatherCache = new Cache(1000 * 60 * 5);
 
-function get(req, res, next) {
+function get(req, res) {
     weatherCache(`${req.params.lat};${req.params.lng}`, function(resolve, reject) {
         // return resolve(mockData);
         request({

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# /etc/X11/xinit/xinitrc
+#
+# global xinitrc file, used by all X sessions started by xinit (startx)
+
+# http://raspberrypi.stackexchange.com/a/2079
+xset s off         # don't activate screensaver
+xset -dpms         # disable DPMS (Energy Star) features.
+xset s noblank     # don't blank the video device
+
+# invoke global X session script
+. /etc/X11/Xsession

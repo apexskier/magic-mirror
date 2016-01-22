@@ -1,0 +1,1 @@
+chromium --noerrdialogs --kiosk http://localhost:8101 --incognito

@@ -1,0 +1,53 @@
+#!/bin/bash
+# /etc/init.d/magic-mirror
+#
+
+PIDFILE="/var/run/magic-mirror.pid"
+
+# Some things that run always
+# touch /var/lock/blah
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting magic mirror server"
+    cd /home/pi/magic-mirror
+    node ./src/server.js >/var/log/magic-mirror.log 2>/var/log/magic-mirror.error.log &
+    echo $! >$PIDFILE
+    ;;
+  stop)
+    if [ -s "$PIDFILE" ] && ps -p `cat $PIDFILE` > /dev/null
+    then
+      echo "Stopping magic mirror server"
+      kill -15 `cat $PIDFILE`
+      rm $PIDFILE
+    else
+      echo "Magic mirror server not running"
+    fi
+    ;;
+  restart)
+    $0 stop
+    $0 start || exit $?
+    ;;
+  status)
+    if [ -s "$PIDFILE" ]
+    then
+      PID=`cat $PIDFILE`
+      if ps -p $PID >/dev/null
+      then
+        CMD=`ps -p $PID -o comm=`
+        echo "Running: $PID $CMD"
+      else
+        echo "Not running but found pid: $PID"
+      fi
+    else
+      echo "Not running"
+    fi
+    ;;
+  *)
+    echo "Usage: /etc/init.d/blah {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

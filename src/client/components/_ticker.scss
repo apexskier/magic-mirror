@@ -1,7 +1,11 @@
-.content {
-  margin-bottom: 8px;
-}
+.ticker {
+  padding-bottom: 30px;
 
-figcaption {
-  font-size: .8em;
+  .content {
+    margin-bottom: 8px;
+  }
+
+  figcaption {
+    font-size: .8em;
+  }
 }

@@ -6,6 +6,23 @@ var Clock = require('./clock');
 var Weather = require('./weather');
 var Ticker = require('./ticker');
 
+const animationend = (() => {
+    var el = document.createElement('fakeelement'),
+        transitions = {
+            'animation': 'animationend',
+            'OAnmiation': 'oAnimationEnd',
+            'MozAnimation': 'animationend',
+            'WebkitAnimation': 'webkitAnimationEnd'
+        };
+    for (var t in transitions) {
+        if (el.style[t] !== undefined) {
+            return transitions[t];
+        }
+    }
+})();
+
+var hackCount = 0;
+
 var MainComponent = React.createClass({
     getInitialState: function() {
         return {
@@ -38,17 +55,15 @@ var MainComponent = React.createClass({
     focus: function(state, allowWhenInactive) {
         allowWhenInactive = allowWhenInactive || this.state.active;
         if (this.animating || !allowWhenInactive || this.state.state === state) return;
-        this.animating = true;
 
-        $(ReactDOM.findDOMNode(this))
-            .removeClass((i, classes) => classes.split(' ').filter(c => c.startsWith('slide')).join(' '));
+        var $el = $(ReactDOM.findDOMNode(this));
+        $el.removeClass((i, classes) => classes.split(' ').filter(c => c.startsWith('slide')).join(' '));
+
         setTimeout(() => {
-            $(ReactDOM.findDOMNode(this))
-                .addClass(`slide-${state}-out`)
-                .one('animationend', () => {
-                    this.animating = false;
-                    this.switchState(state);
-                });
+            $el.addClass(`slide-${state}-out`).one(animationend, () => {
+                this.animating = false;
+                this.switchState(state);
+            });
         }, 100);
     },
     focusLeft: function() {
@@ -82,19 +97,21 @@ var MainComponent = React.createClass({
             );
         } else if (this.state.state === 'right') {
             content = (
-                <div className="">
-                    <div className="component center" onClick={this.focusReset}><Weather display="full" /></div>
-                </div>
+                <div className="component center" onClick={this.focusReset}><Weather display="full" /></div>
             );
         } else if (this.state.state === 'left') {
             content = (
-                <div className="row slide-center-in">
-                    <div className="component empty" onClick={this.focusReset} display="full" />
-                </div>
+                <div className="component empty" onClick={this.focusReset} display="full" />
             );
         }
         return (
-            <div className={stateClasses} onClick={this.goActive}>{content}</div>
+            <div className={stateClasses} onClick={this.goActive}>
+                <div className="row empty"></div>
+                <div className="row">
+                    {content}
+                </div>
+                <div className="row empty"></div>
+            </div>
         );
     }
 });

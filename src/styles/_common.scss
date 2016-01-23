@@ -1,5 +1,7 @@
 @import "variables";
 
+@import url(https://fonts.googleapis.com/css?family=Cabin:400,500,500italic,600,600italic,700,700italic,400italic);
+
 * {
   box-sizing: border-box;
 }
@@ -14,7 +16,8 @@ html {
 }
 
 body {
-  font-family: system, -apple-system, ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", helvetica, sans-serif;
+  font-family: 'Cabin', system, -apple-system, ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", helvetica, sans-serif;
+  font-size: 20px;
   background-color: #000;
   color: #fff;
   height: 100%;

@@ -130,6 +130,10 @@ $icon-stripe-width: 3px;
 
 .fadein-invisible {
   opacity: 0;
+
+  td {
+    border-color: rgba(255, 255, 255, 0);
+  }
 }
 
 @for $delay from 0 through 50 {

@@ -7,6 +7,20 @@ var $ = require('jquery');
 
 const eveningHour = 12 + 5;
 const morningHour = 10;
+const animationstart = (() => {
+    var el = document.createElement('fakeelement'),
+        transitions = {
+            'animation': 'animationstart',
+            'OAnmiation': 'oAnimationStart',
+            'MozAnimation': 'animationstart',
+            'WebkitAnimation': 'webkitAnimationStart'
+        };
+    for (var t in transitions) {
+        if (el.style[t] !== undefined) {
+            return transitions[t];
+        }
+    }
+})();
 
 var Weather = React.createClass({
     getDefaultProps: function() {
@@ -67,19 +81,16 @@ var Weather = React.createClass({
                 this.setState({error: err});
             }
         });
-        this.updateIcons();
-        $(ReactDOM.findDOMNode(this)).find('.fadein-invisible').one('animationstart', function(e) {
-            $(e.target).removeClass('fadein-invisible');
-        });
+        this.componentDidUpdate();
     },
     componentWillUnmount: function() {
         clearInterval(this.interval);
     },
     componentDidUpdate: function() {
         this.updateIcons();
-        $(ReactDOM.findDOMNode(this)).find('.fadein-invisible').one('animationstart', function(e) {
+        /* $(ReactDOM.findDOMNode(this)).find('.fadein-invisible').one(animationstart, function(e) {
             $(e.target).removeClass('fadein-invisible');
-        });
+        });*/
     },
     updateIcons: function() {
         Array.prototype.forEach.call(ReactDOM.findDOMNode(this).querySelectorAll('.skycon'), function(el) {
@@ -207,11 +218,12 @@ var Weather = React.createClass({
                         );
                     }
 
-                    var classes = `fadein-invisible fadein-after-${fadeinDelay}`;
-                    fadeinDelay += 20;
+                    // var classes = `fadein-invisible fadein-after-${fadeinDelay}`;
+                    // fadeinDelay += 20;
+                    //  className={classes}>
 
                     return (
-                        <tr key={d.time} className={classes}>
+                        <tr key={d.time}>
                             <td className="time">{moment(d.time * 1000).format('h a')}</td>
                             <td className={tempStatus}>{temp}℉</td>
                             {probEl}

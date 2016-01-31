@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
+var io = require('socket.io-client');
 
 var Clock = require('./clock');
 var Weather = require('./weather');
@@ -21,7 +22,12 @@ const animationend = (() => {
     }
 })();
 
-var hackCount = 0;
+var socket = io.connect('http://localhost:8101');
+socket.on('ping', function(data) {
+    if (data === 'ping') {
+        socket.emit('ping', 'pong');
+    }
+});
 
 var MainComponent = React.createClass({
     getInitialState: function() {
@@ -34,8 +40,19 @@ var MainComponent = React.createClass({
     animating: false,
     componentDidMount: function() {
         this.inactiveTimeout = setTimeout(this.goInactive, 1000 * 5);
+        socket.on('activate', () => {
+            console.log('external activate');
+            this.goActive();
+        });
+        socket.on('switchState', (data) => {
+            console.log('external state switch', data);
+            this.goActive();
+            this.focus(data.to);
+        });
     },
     componentWillUnmount: function() {
+        socket.off('activate');
+        socket.off('switchState');
     },
     switchState: function(to) {
         this.setState({

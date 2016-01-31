@@ -49,7 +49,6 @@ function Cache(time) {
         var now = (new Date()).getTime();
         working[key] = new Promise(function(resolve) {
             if (now - lastUpdated[key] > cache.time) {
-                console.log(`cache miss '${key}'`);
                 resolve(new Promise(dataCallback).then(v => {
                     value[key] = v;
                     lastUpdated[key] = (new Date()).getTime();

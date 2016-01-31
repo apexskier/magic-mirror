@@ -44,22 +44,21 @@ internalApp.get('/', function(req, res) {
 });
 internalApp.all('/activate', function(req, res) {
     io.sockets.emit('activate');
-    res.status(202).end();
+    res.status(202).json(true);
 });
 internalApp.all('/state', function(req, res) {
     io.sockets.emit('switchState', {to: 'center'});
-    res.status(202).end();
+    res.status(202).json(true);
 });
 internalApp.all('/state/:state', function(req, res) {
     var state = req.params.state;
     // allowed states
     if (['center', 'right'].indexOf(state) > -1) {
         io.sockets.emit('switchState', {to: state});
-        res.status(202);
+        res.status(202).json(false);
     } else {
-        res.status(400);
+        res.status(400).json(false);
     }
-    res.end();
 });
 
 internalApp.use(morgan('tiny'));

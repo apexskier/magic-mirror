@@ -3,24 +3,17 @@ var $ = require('jquery');
 var emojione = require('emojione');
 
 var Ticker = React.createClass({
-    getInitialState: function() {
-        return {
-            item: 0,
-            items: []
-        };
-    },
+    items: [],
     tick: function() {
         this.setState({
-            item: (this.state.item + 1) % this.state.items.length
+            item: this.items[Math.floor(Math.random() * this.items.length)]
         });
     },
     refresh: function() {
         Promise.resolve($.get('/api/ticker', null))
             .then(response => {
                 if (this.isMounted()) {
-                    this.setState({
-                        items: response.data
-                    });
+                    this.items = response.data;
                 }
             }).catch(err => {
                 console.warn(err);
@@ -36,13 +29,12 @@ var Ticker = React.createClass({
         clearInterval(this.refreshInterval);
     },
     render: function() {
-        if (this.state.items.length > 0) {
-            var item = this.state.items[this.state.item];
-            var content = emojione.unicodeToImage(item.content);
+        if (this.items.length > 0 && this.state.item) {
+            var content = emojione.unicodeToImage(this.state.item.content);
             return (
                 <figure className="ticker">
                     <p className="content" dangerouslySetInnerHTML={{__html: content}} />
-                    <figcaption> &mdash; <cite>{item.source}</cite></figcaption>
+                    <figcaption> &mdash; <cite>{this.state.item.source}</cite></figcaption>
                 </figure>
             );
         } else {

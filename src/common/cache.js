@@ -1,6 +1,4 @@
 function Cache(time) {
-    console.log('new cache');
-
     var single = null;
     cache.time = time;
     var lastUpdated = {};
@@ -55,14 +53,13 @@ function Cache(time) {
                     return v;
                 }));
             } else {
-                console.log(`cache hit '${key}'`);
                 resolve(value[key]);
             }
         }).then(v => {
             working[key] = null;
             return v;
-        }).catch(() => {
-            console.log('promise failed, not caching');
+        }).catch((e) => {
+            console.warn('promise failed, not caching', e);
         });
 
         return working[key];

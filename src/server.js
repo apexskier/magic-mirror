@@ -10,6 +10,12 @@ var internalPort = 8102;
 
 // External server
 var app = express();
+app.use(morgan('tiny', {
+    skip: function(req) {
+        return req.originalUrl.startsWith('/socket.io');
+    }
+}));
+
 var server = http.Server(app);
 var io = require('socket.io')(server);
 
@@ -25,16 +31,12 @@ app.get('/api/ticker', ticker.get);
 io.on('connection', function(socket) {
     socket.emit('ping', 'ping');
 });
-
-app.use(morgan('tiny', {
-    skip: function(req) {
-        return req.originalUrl.startsWith('/socket.io');
-    }
-}));
 app.use(express.static('./dst'));
 
 // Internal Server
 var internalApp = express();
+internalApp.use(morgan('tiny'));
+
 var internalServer = http.Server(internalApp);
 
 internalApp.get('/', function(req, res) {
@@ -60,8 +62,6 @@ internalApp.all('/state/:state', function(req, res) {
         res.status(400).json(false);
     }
 });
-
-internalApp.use(morgan('tiny'));
 
 server.listen(externalPort);
 internalServer.listen(internalPort);

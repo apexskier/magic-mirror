@@ -1,5 +1,4 @@
 node_modules/
-dst/
 deploy/
 tmp/
 src/private.js

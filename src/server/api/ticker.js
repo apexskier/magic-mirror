@@ -16,10 +16,10 @@ function get(req, res) {
             lang: 'en'
         }, function(error, tweets) {
             if (error) reject(error);
-            resolve(tweets.statuses.filter(tweet => {
+            resolve(tweets.statuses/* .filter(tweet => {
                 return (!tweet.entities.media || tweet.entities.media.length === 0) &&
                     (!tweet.entities.urls || tweet.entities.urls.length === 0);
-            }).map(tweet => {
+            })*/.map(tweet => {
                 return {
                     content: tweet.text,
                     source: `@${tweet.user.screen_name}`

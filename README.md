@@ -12,6 +12,10 @@ http://conoroneill.net/running-the-latest-chromium-45-on-debian-jessie-on-your-r
 
 http://www.pyimagesearch.com/2015/10/26/how-to-install-opencv-3-on-raspbian-jessie/
 
+**OpenCV Raspberry Pi camera**
+
+http://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/
+
 **Install Node**
 
 For the Raspberry Pi 2, use the ARMv7 node build.

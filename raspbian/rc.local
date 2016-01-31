@@ -20,7 +20,7 @@ fi
 # prevent display sleep
 sh -c 'setterm -blank 0 -powersave off -powerdown 0 < /dev/console > /dev/console 2>&1'
 
-# start openbox 
+# start openbox
 su -l pi -c startx
 
 exit 0

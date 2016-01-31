@@ -41,11 +41,9 @@ var MainComponent = React.createClass({
     componentDidMount: function() {
         this.inactiveTimeout = setTimeout(this.goInactive, 1000 * 5);
         socket.on('activate', () => {
-            console.log('external activate');
             this.goActive();
         });
         socket.on('switchState', (data) => {
-            console.log('external state switch', data);
             this.goActive();
             this.focus(data.to);
         });

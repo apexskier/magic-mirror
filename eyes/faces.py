@@ -31,7 +31,10 @@ class RateLimit(object):
 
 def activate_function():
     print('activating')
-    requests.post('http://localhost:8102/activate')
+    try:
+        requests.post('http://localhost:8102/activate')
+    except Exception: # TODO: More specific
+        print("Failed to contact server.")
 
 activate = RateLimit(activate_function)
 

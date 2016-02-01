@@ -7,12 +7,14 @@ var apiKeys = require('../../private.js').twitter;
 var cache = new Cache(1000 * 60 * 5);
 var client = new Twitter(apiKeys);
 
+var hashtag = '#dadjokes';
+
 function get(req, res) {
     cache(function(resolve, reject) {
         // return resolve(mockData);
         client.get('search/tweets', {
-            q: '#QOTD -filter:retweets',
-            result_type: 'popular',
+            q: `${hashtag} -filter:retweets`,
+            // result_type: 'popular',
             lang: 'en'
         }, function(error, tweets) {
             if (error) reject(error);

@@ -10,5 +10,5 @@ var MainComponent = require('./client/components/mainComponent');
 window.$ = $;
 
 ReactDOM.render((
-    <MainComponent state="center" activeTime={1000 * 60} />
+    <MainComponent state="center" activeTime={1000 * 20} />
 ), document.getElementById('root'));

@@ -99,12 +99,12 @@ var MainComponent = React.createClass({
         if (this.state.state === 'center') {
             return (
                 <div className={stateClasses} onClick={this.goActive}>
-                    <div className="row empty"></div>
                     <div className="row">
-                        <div className="component empty" onClick={this.focusLeft} display="minimal" />
                         <div className="component component-primary center"><Clock /></div>
+                        <div className="component empty" onClick={this.focusLeft} />
                         <div className="component center" onClick={this.focusRight}><Weather display="minimal" /></div>
                     </div>
+                    <div className="row empty"></div>
                     <div className="row empty">
                         <div className="component center"><Ticker /></div>
                     </div>

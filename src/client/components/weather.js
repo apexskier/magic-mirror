@@ -7,7 +7,7 @@ var $ = require('jquery');
 
 const eveningHour = 12 + 5;
 const morningHour = 10;
-const animationstart = (() => {
+/* const animationstart = (() => {
     var el = document.createElement('fakeelement'),
         transitions = {
             'animation': 'animationstart',
@@ -20,7 +20,7 @@ const animationstart = (() => {
             return transitions[t];
         }
     }
-})();
+})(); */
 
 var Weather = React.createClass({
     getDefaultProps: function() {
@@ -174,7 +174,7 @@ var Weather = React.createClass({
                     }
                 });
 
-                var fadeinDelay = 0;
+                // var fadeinDelay = 0;
 
                 var hourly = data.slice(0, 18).map(d => {
                     var prob = Math.round(d.precipProbability * 100);

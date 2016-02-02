@@ -16,38 +16,32 @@
   justify-content: space-between;
   align-items: stretch;
   align-content: stretch;
-  position: relative;
 
   &.slide-right-in {
-    animation: slide-right $transition-speed ease-in-out;
+    animation: slide-right .6s ease-in-out;
     animation-direction: reverse;
-    right: 0;
   }
 
   &.slide-right-out {
-    animation: slide-right $transition-speed ease-in-out;
-    right: 100%;
+    animation: slide-right .6s ease-in-out;
   }
 
   &.slide-left-in {
-    animation: slide-left $transition-speed ease-in-out;
-    left: 0;
+    animation: slide-left .6s ease-in-out;
   }
 
   &.slide-left-out {
-    animation: slide-left $transition-speed ease-in-out;
+    animation: slide-left .6s ease-in-out;
     animation-direction: reverse;
-    left: 100%;
   }
 
   &.slide-center-in {
-    animation: slide-center $transition-speed ease-in-out;
+    animation: slide-center .6s ease-in-out;
     animation-direction: reverse;
-    opacity: 1;
   }
 
   &.slide-center-out {
-    animation: slide-center $transition-speed ease-in-out;
+    animation: slide-center .6s ease-in-out;
   }
 
   .row {
@@ -83,37 +77,29 @@
 
 @keyframes slide-right {
   from {
-    right: 0;
-    // transform: translate(0);
-    // transform: translateX(0) translateZ(0) rotateY(0);
+    transform: translateX(0) translateZ(0) rotateY(0);
   }
   to {
-    right: 100%;
-    // transform: translate(-100%);
-    // transform: translateX(-100%) translateZ(100px) rotateY(30deg);
+    transform: translateX(-100%) translateZ(100px) rotateY(30deg);
   }
 }
 
 @keyframes slide-left {
   from {
-    left: 0;
-    // transform: translate(0);
-    // transform: translateX(0) translateZ(0) rotateY(0);
+    transform: translateX(0) translateZ(0) rotateY(0);
   }
   to {
-    left: 100%;
-    // transform: translate(100%);
-    // transform: translateX(100%) translateZ(100px) rotateY(-30deg);
+    transform: translateX(100%) translateZ(100px) rotateY(-30deg);
   }
 }
 
 @keyframes slide-center {
   from {
-    // transform: translateZ(0);
+    transform: translateZ(0);
     opacity: 1;
   }
   to {
-    // transform: translateZ(600px);
+    transform: translateZ(600px);
     opacity: 0;
   }
 }

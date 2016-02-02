@@ -70,10 +70,10 @@ var MainComponent = React.createClass({
     focus: function(state, allowWhenInactive) {
         allowWhenInactive = allowWhenInactive || this.state.active;
         if (this.animating || !allowWhenInactive || this.state.state === state) return;
+        this.animating = true;
 
         var $el = $(ReactDOM.findDOMNode(this));
         $el.removeClass((i, classes) => classes.split(' ').filter(c => c.startsWith('slide')).join(' '));
-
         setTimeout(() => {
             $el.addClass(`slide-${state}-out`).one(animationend, () => {
                 this.animating = false;

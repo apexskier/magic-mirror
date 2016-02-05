@@ -85,7 +85,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     image = frame.array
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     mask = fgbg.apply(gray)
-    masked = cv2.bitwise_and(gray, gray, mask=mask)
 
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
@@ -93,6 +92,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         preview = cv2.bitwise_and(image, image, mask=mask)
         for (x, y, w, h) in faces:
             cv2.rectangle(preview, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
+
+    masked = cv2.bitwise_and(gray, gray, mask=mask)
 
     if len(faces):
         activate()
@@ -132,4 +134,3 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         running = False
-

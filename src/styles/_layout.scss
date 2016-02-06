@@ -77,29 +77,29 @@
 
 @keyframes slide-right {
   from {
-    transform: translateX(0) translateZ(0) rotateY(0);
+    transform: translate(0); // translateX(0) translateZ(0) rotateY(0);
   }
   to {
-    transform: translateX(-100%) translateZ(100px) rotateY(30deg);
+    transform: translate(-100%); // translateX(-100%) translateZ(100px) rotateY(30deg);
   }
 }
 
 @keyframes slide-left {
   from {
-    transform: translateX(0) translateZ(0) rotateY(0);
+    transform: translate(0); // translateX(0) translateZ(0) rotateY(0);
   }
   to {
-    transform: translateX(100%) translateZ(100px) rotateY(-30deg);
+    transform: translate(100%); // translateX(100%) translateZ(100px) rotateY(-30deg);
   }
 }
 
 @keyframes slide-center {
   from {
-    transform: translateZ(0);
+    transform: scale(1); // translateZ(0);
     opacity: 1;
   }
   to {
-    transform: translateZ(600px);
+    transform: scale(2); // translateZ(600px);
     opacity: 0;
   }
 }

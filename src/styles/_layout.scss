@@ -16,6 +16,7 @@
   justify-content: space-between;
   align-items: stretch;
   align-content: stretch;
+  transform: translateZ(0);
 
   &.slide-right-in {
     animation: slide-right .6s ease-in-out;

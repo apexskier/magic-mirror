@@ -35,7 +35,9 @@ var Weather = React.createClass({
     },
     getInitialState: function() {
         return {
-            loading: true
+            loading: true,
+            lat: 47.6150436,
+            lng: -122.1717577
         };
     },
     tick: function() {
@@ -64,7 +66,9 @@ var Weather = React.createClass({
         return (nowHours || new Date().getHours()) > eveningHour;
     },
     componentDidMount: function() {
-        geolocation.then(position => {
+        this.tick();
+        this.interval = setInterval(this.tick, this.props.tickDuration);
+        /* geolocation.then(position => {
             if (this.isMounted()) {
                 this.setState({
                     lat: position.latitude,
@@ -80,7 +84,7 @@ var Weather = React.createClass({
                 console.log('Trying again in 1 minute', err);
                 this.setState({error: err});
             }
-        });
+        }); */
         this.componentDidUpdate();
     },
     componentWillUnmount: function() {

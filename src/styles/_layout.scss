@@ -106,7 +106,7 @@
 }
 
 .tracking {
-  $size: 100px;
+  $size: 80px;
   position: absolute;
   height: $size;
   width: $size;
@@ -115,10 +115,14 @@
   left: 0;
   top: 0;
   background-color: #fff;
-  transition: opacity 200ms, left 100ms, top 100ms;
+  transition: opacity .6s, left .2s, top .1s;
   margin-left: -($size / 2);
 
   &.visible {
     opacity: .5;
+
+    .inactive & {
+      opacity: .3;
+    }
   }
 }

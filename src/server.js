@@ -56,6 +56,8 @@ internalApp.all('/state/:state', function(req, res) {
     var state = req.params.state;
     // allowed states
     if (['center', 'right'].indexOf(state) > -1) {
+        // TODO: Add a slide route, that sends state agnostic events
+        // Client knows what state is active and slides appropriately
         io.sockets.emit('switchState', {to: state});
         res.status(202).json(false);
     } else {

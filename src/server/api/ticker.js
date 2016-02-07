@@ -18,6 +18,7 @@ function get(req, res) {
             lang: 'en'
         }, function(error, tweets) {
             if (error) reject(error);
+            if (!tweets || !tweets.statuses) reject();
             resolve(tweets.statuses/* .filter(tweet => {
                 return (!tweet.entities.media || tweet.entities.media.length === 0) &&
                     (!tweet.entities.urls || tweet.entities.urls.length === 0);

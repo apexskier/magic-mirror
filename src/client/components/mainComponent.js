@@ -30,11 +30,15 @@ socket.on('ping', function(data) {
 });
 
 var trackingTimeout;
-socket.on('tracking', function(data)
+socket.on('tracking', function(data) {
     $('.tracking').addClass('visible').css({
         left: (data.x * 100) + '%',
         top: (data.y * 100) + '%'
     });
+    clearTimeout(trackingTimeout);
+    trackingTimeout = setTimeout(() => {
+        $('.tracking').removeClass('visible');
+    }, 2000);
 });
 
 var MainComponent = React.createClass({

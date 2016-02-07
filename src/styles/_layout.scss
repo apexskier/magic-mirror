@@ -114,10 +114,11 @@
   opacity: 0;
   left: 0;
   top: 0;
+  background-color: #fff;
   transition: opacity 200ms, left 100ms, top 100ms;
   margin-left: -($size / 2);
 
-  &:visible {
-    opacity: 1;
+  &.visible {
+    opacity: .5;
   }
 }

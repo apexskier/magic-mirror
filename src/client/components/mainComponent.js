@@ -47,6 +47,35 @@ var MainComponent = React.createClass({
             this.goActive();
             this.focus(data.to);
         });
+        socket.on('gesture', (data) => {
+            this.goActive();
+            switch (data.direction) {
+            case 'left':
+                switch (this.state.state) {
+                case 'center':
+                    this.focus('right');
+                    break;
+                case 'left':
+                    this.focus('center');
+                    break;
+                }
+                break;
+            case 'right':
+                switch (this.state.state) {
+                case 'right':
+                    this.focus('center');
+                    break;
+                case 'center':
+                    // this.focus('left');
+                    break;
+                }
+                break;
+            case 'up':
+            case 'down':
+            default:
+                break;
+            }
+        });
     },
     componentWillUnmount: function() {
         socket.off('activate');

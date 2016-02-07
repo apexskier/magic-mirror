@@ -1,11 +1,17 @@
 @import "variables";
 
 #root {
-  height: 100%;
-  width: 100%;
-  perspective: 600px;
-  perspective-origin: center;
-  overflow: hidden;
+  &,
+  > div {
+    height: 100%;
+    width: 100%;
+  }
+
+  > div {
+    perspective: 600px;
+    perspective-origin: center;
+    overflow: hidden;
+  }
 }
 
 .container {
@@ -102,27 +108,5 @@
   to {
     transform: scale(2); // translateZ(600px);
     opacity: 0;
-  }
-}
-
-.tracking {
-  $size: 80px;
-  position: absolute;
-  height: $size;
-  width: $size;
-  border-radius: $size / 2;
-  opacity: 0;
-  left: 0;
-  top: 0;
-  background-color: #fff;
-  transition: opacity .6s, left .2s, top .1s;
-  margin-left: -($size / 2);
-
-  &.visible {
-    opacity: .5;
-
-    .inactive & {
-      opacity: .3;
-    }
   }
 }

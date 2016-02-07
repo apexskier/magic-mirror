@@ -17,7 +17,9 @@ node src/server.js   # server
 
 ## Assorted setup notes
 
-**Install Chromium**
+**Install Web Browser**
+
+`sudo apt-get install iceweasel`
 
 http://conoroneill.net/running-the-latest-chromium-45-on-debian-jessie-on-your-raspberry-pi-2/
 
@@ -53,3 +55,7 @@ display_rotate=1
 BLANK_TIME=0
 POWERDOWN_TIME=0
 ```
+
+## Dev Resources
+
+[OpenCV Motion Tracking](https://github.com/pageauc/motion-track/blob/master/motion3-track.py)

@@ -163,8 +163,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             if area > largest_area:
                 largest_area = area
                 largest = c
-            (x, y, w, h) = cv2.boundingRect(c)
-            cv2.rectangle(preview, (x, y), (x + w, y + h), (0, 155, 0), 1)
+            if args.preview:
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(preview, (x, y), (x + w, y + h), (0, 155, 0), 1)
 
         if largest is not None and largest_area > 10:
             (x, y, w, h) = cv2.boundingRect(largest)
@@ -174,9 +175,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 cv2.circle(preview, (cx, cy), min(w, h), (0, 255, 0), 2)
 
         if seeing_face:
-            if args.preview:
-                pass
-
             if largest is not None and largest_area > 10:
                 active_object.hit((cx, cy))
             else:

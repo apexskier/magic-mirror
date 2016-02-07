@@ -22,11 +22,19 @@ const animationend = (() => {
     }
 })();
 
-var socket = io.connect('http://localhost:8101');
+var socket = io.connect('http://localhost:8101/client');
 socket.on('ping', function(data) {
     if (data === 'ping') {
         socket.emit('ping', 'pong');
     }
+});
+
+var trackingTimeout;
+socket.on('tracking', function(data)
+    $('.tracking').addClass('visible').css({
+        left: (data.x * 100) + '%',
+        top: (data.y * 100) + '%'
+    });
 });
 
 var MainComponent = React.createClass({
@@ -137,6 +145,7 @@ var MainComponent = React.createClass({
                     <div className="row empty">
                         <div className="component center"><Ticker /></div>
                     </div>
+                    <div className="tracking" />
                 </div>
             );
         } else if (this.state.state === 'right') {
@@ -155,6 +164,7 @@ var MainComponent = React.createClass({
                     {content}
                 </div>
                 <div className="row empty"></div>
+                <div className="tracking" />
             </div>
         );
     }

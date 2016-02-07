@@ -104,3 +104,20 @@
     opacity: 0;
   }
 }
+
+.tracking {
+  $size: 100px;
+  position: absolute;
+  height: $size;
+  width: $size;
+  border-radius: $size / 2;
+  opacity: 0;
+  left: 0;
+  top: 0;
+  transition: opacity 200ms, left 100ms, top 100ms;
+  margin-left: -($size / 2);
+
+  &:visible {
+    opacity: 1;
+  }
+}

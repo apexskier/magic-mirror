@@ -9,12 +9,14 @@ import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import requests
+from socketIO_client import SocketIO, BaseNamespace
 
 parser = argparse.ArgumentParser(description='Do fancy OpenCV stuff')
 parser.add_argument('--preview', action='store_true')
 args = parser.parse_args()
 
 resolution = (320, 240)
+api_root = 'http://localhost:8102'
 
 # initialize camera
 print('initializing camera...')
@@ -117,10 +119,15 @@ class RateLimit(object):
 
 def activate_function():
     try:
-        requests.post('http://localhost:8102/activate')
-    except Exception: # TODO: More specific
-        print("Failed to contact server.")
+        requests.post(api_root + '/activate')
+    except Exception:
+        pass
 activate = RateLimit(activate_function)
+
+
+print('starting socketio...')
+io = SocketIO('localhost', 8101)
+io_namespace = io.define(BaseNamespace, '/vision')
 
 
 print('starting capture...')
@@ -196,6 +203,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             if args.preview:
                 cv2.circle(preview, (cx, cy), min(w, h), (0, 255, 0), 2)
 
+            io_namespace.emit('tracking', {
+                'x': cx / resolution[0],
+                'y': cy / resolution[1]
+            })
+
         if seeing_face:
             if largest is not None and largest_area > 10 and now - first_saw_face > 1:
                 active_object.hit((cx, cy))
@@ -209,11 +221,17 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 if diff is not None:
                     if diff[0] > 20:
                         print("slide left")
-                        requests.post('http://localhost:8102/gesture/left')
+                        try:
+                            requests.post(api_root + '/gesture/left')
+                        except Exception:
+                            pass
                         last_action = now
                     elif diff[0] < -20:
                         print("slide right")
-                        requests.post('http://localhost:8102/gesture/right')
+                        try:
+                            requests.post(api_root + '/gesture/right')
+                        except Exception:
+                            pass
                         last_action = now
 
         # fps = capture.get(cv2.CAP_PROP_FPS)

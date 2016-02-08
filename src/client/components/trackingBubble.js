@@ -12,17 +12,20 @@ var TrackingBubble = React.createClass({
     componentDidMount: function() {
         this.trackingTimeout = null;
         socket.on('tracking', (data) => {
-            this.setState({
-                visible: true,
-                left: data.x,
-                top: data.y
-            });
-            this.trackingTimeout = setTimeout(() => {
-                if (this.isMounted()) {
-                    this.setState({ visible: false });
-                }
-            }, 1000);
+            if (data && data.x && data.y && data.x > 0 && data.y > 0) {
+                this.setState({
+                    visible: true,
+                    left: data.x,
+                    top: data.y
+                });
+                this.trackingTimeout = setTimeout(() => {
+                    if (this.isMounted()) {
+                        this.setState({ visible: false });
+                    }
+                }, 1000);
+            }
         });
+        window.test = (v) => { this.setState(v); };
     },
     componentWillUnmount: function() {
         socket.off('tracking');
@@ -32,9 +35,13 @@ var TrackingBubble = React.createClass({
         var classes = 'tracking-bubble';
         var style;
         if (this.state.visible) {
+            var xfactor = 0.5;
+            var yfactor = 0.9;
+            var left = ((this.state.left * yfactor) + ((1 - yfactor) / 2)) * 100;
+            var top = ((this.state.top * xfactor) + ((1 - xfactor) / 2)) * 100;
             style = {
-                left: this.state.left * 100 + '%',
-                top: this.state.top * 100 + '%'
+                left: `${left}%`,
+                top: `${top}%`
             };
             classes += ' visible';
         }

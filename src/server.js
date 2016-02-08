@@ -53,10 +53,6 @@ externalApp.use(morgan('tiny'));
 
 var externalServer = http.Server(externalApp);
 
-externalApp.post('/api/hashTag', function(req, res) {
-
-});
-
 // Internal Server
 var internalApp = express();
 internalApp.use(morgan('tiny'));
@@ -98,7 +94,7 @@ internalApp.all('/gesture/:direction', function(req, res) {
 });
 
 server.listen(clientPort);
-externalServer.listen(externalPort)
+externalServer.listen(externalPort);
 internalServer.listen(internalPort);
 
 console.log(`Listening on port ${clientPort} (client)`);

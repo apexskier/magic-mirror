@@ -1,5 +1,4 @@
 var Twitter = require('twitter');
-var userData = require('../userData');
 var Cache = require('../../common/cache');
 
 var apiKeys = require('../../private.js').twitter;
@@ -23,7 +22,7 @@ function get(req, res) {
                 if (error) reject(error);
                 if (!trends || !trends.length) reject();
                 trends = trends[0].trends.filter((tr) => !tr.promoted_content);
-                var trend = trends[Math.floor(Math.random() * trends.length)]
+                var trend = trends[Math.floor(Math.random() * trends.length)];
                 client.get('search/tweets', {
                     q: `${trend.name} -filter:retweets`,
                     result_type: 'popular',

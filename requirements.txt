@@ -1,4 +1,4 @@
-ipython==4.0.3
-numpy==1.10.4
-picamera[array]==1.10
+numpy[array]==1.10.4
+picamera==1.10
 requests==2.9.1
+socketIO-client==0.6.5

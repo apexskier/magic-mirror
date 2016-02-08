@@ -35,7 +35,7 @@ var TrackingBubble = React.createClass({
         var classes = 'tracking-bubble';
         var xfactor = 0.5;
         var yfactor = 0.9;
-        var left = -((this.state.left * yfactor) + ((1 - yfactor) / 2)) * 100;
+        var left = (((1 - this.state.left) * yfactor) + ((1 - yfactor) / 2)) * 100;
         var top = ((this.state.top * xfactor) + ((1 - xfactor) / 2)) * 100;
         var style = {
             left: `${left}%`,

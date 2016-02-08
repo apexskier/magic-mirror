@@ -33,16 +33,15 @@ var TrackingBubble = React.createClass({
     },
     render: function() {
         var classes = 'tracking-bubble';
-        var style;
+        var xfactor = 0.5;
+        var yfactor = 0.9;
+        var left = ((this.state.left * yfactor) + ((1 - yfactor) / 2)) * 100;
+        var top = ((this.state.top * xfactor) + ((1 - xfactor) / 2)) * 100;
+        var style = {
+            left: `${left}%`,
+            top: `${top}%`
+        };
         if (this.state.visible) {
-            var xfactor = 0.5;
-            var yfactor = 0.9;
-            var left = ((this.state.left * yfactor) + ((1 - yfactor) / 2)) * 100;
-            var top = ((this.state.top * xfactor) + ((1 - xfactor) / 2)) * 100;
-            style = {
-                left: `${left}%`,
-                top: `${top}%`
-            };
             classes += ' visible';
         }
         return <div className={classes} style={style} />;

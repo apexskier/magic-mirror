@@ -25,9 +25,9 @@ var Ticker = React.createClass({
             });
     },
     componentDidMount: function() {
-        this.tickInterval = setInterval(this.tick, 1000 * 60 * 60);
+        this.tickInterval = setInterval(this.tick, 1000 * 60 * 5);
         this.refresh();
-        this.refreshInterval = setInterval(this.refresh, 1000 * 60 * 60 * 3);
+        this.refreshInterval = setInterval(this.refresh, 1000 * 60 * 1);
     },
     componentWillUnmount: function() {
         clearInterval(this.tickInterval);

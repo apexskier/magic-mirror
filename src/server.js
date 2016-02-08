@@ -5,10 +5,11 @@ var ticker = require('./server/api/ticker');
 var http = require('http');
 var morgan = require('morgan');
 
-var externalPort = 8101;
+var clientPort = 8101;
 var internalPort = 8102;
+var externalPort = 8103;
 
-// External server
+// Client server
 var app = express();
 app.use(morgan('tiny', {
     skip: function(req) {
@@ -45,6 +46,16 @@ io.of('/vision').on('connection', function(socket) {
     });
 });
 app.use(express.static('./dst'));
+
+// External server
+var externalApp = express();
+externalApp.use(morgan('tiny'));
+
+var externalServer = http.Server(externalApp);
+
+externalApp.post('/api/hashTag', function(req, res) {
+
+});
 
 // Internal Server
 var internalApp = express();
@@ -86,8 +97,10 @@ internalApp.all('/gesture/:direction', function(req, res) {
     }
 });
 
-server.listen(externalPort);
+server.listen(clientPort);
+externalServer.listen(externalPort)
 internalServer.listen(internalPort);
 
+console.log(`Listening on port ${clientPort} (client)`);
 console.log(`Listening on port ${externalPort} (external)`);
 console.log(`Listening on port ${internalPort} (internal)`);

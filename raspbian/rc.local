@@ -1,5 +1,4 @@
 #!/bin/sh -e
-#
 # rc.local
 #
 # This script is executed at the end of each multiuser runlevel.

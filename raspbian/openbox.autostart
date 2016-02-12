@@ -1,3 +1,9 @@
 #!/bin/bash
 # ~/.config/openbox/autostart.sh
-terminator --command '~/magic-mirror/startup.sh' &
+
+# background color
+xsetroot -solid black
+
+unclutter &
+
+~/magic-mirror/startup.sh &

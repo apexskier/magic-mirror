@@ -21,11 +21,13 @@
     "no-unused-vars": [1, {"vars": "all", "args": "after-used"}],
     "one-var": 0,
     "operator-linebreak": 1,
+    "padded-blocks": 1,
     "quotes": [1, "single", "avoid-escape"],
     "radix": 0,
     "semi": [1, "always"],
     "space-after-keywords": 1,
     "space-before-function-paren": [1, "never"],
-    "spaced-comment": 1
+    "spaced-comment": 1,
+    "yoda": 1
   }
 }

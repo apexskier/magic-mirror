@@ -161,7 +161,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     else:
         # 2 second timeout for a face to really be gone
         # this accounts for not recognizing a face for a frame or two at a time
-        if now - last_seen_face > 2:
+        if now - last_seen_face > 1:
             if seeing_face:
                 print("not seeing face")
                 seeing_face = False
@@ -215,7 +215,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 if active_object.inactive_for() > 1:
                     active_object.reset()
 
-            if now - last_action > 2:
+            if now - last_action > 3:
                 diff = active_object.diff_from_mean()
                 # Mirrors invert direction
                 if diff is not None:

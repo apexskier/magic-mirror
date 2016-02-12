@@ -58,8 +58,6 @@ function Cache(time) {
         }).then(v => {
             working[key] = null;
             return v;
-        }).catch((e) => {
-            console.warn('promise failed, not caching', e);
         });
 
         return working[key];

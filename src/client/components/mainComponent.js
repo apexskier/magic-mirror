@@ -36,9 +36,21 @@ var MainComponent = React.createClass({
         socket.on('activate', () => {
             this.goActive();
         });
-        socket.on('switchState', (data) => {
+        socket.on('gesture', (data) => {
             this.goActive();
-            this.focus(data.to);
+            if (data.type === 'generic') {
+                switch (this.props.state) {
+                case 'center':
+                    this.focusRight();
+                    break;
+                case 'right':
+                    this.focusLeft();
+                    break;
+                case 'left':
+                    this.focusCenter();
+                    break;
+                }
+            }
         });
         socket.on('gesture', (data) => {
             this.goActive();
@@ -97,11 +109,12 @@ var MainComponent = React.createClass({
         var $el = $(ReactDOM.findDOMNode(this));
         $el.removeClass((i, classes) => classes.split(' ').filter(c => c.startsWith('slide')).join(' '));
         setTimeout(() => {
-            $el.addClass(`slide-${state}-out`).one(animationend, () => {
+            // `slide-${state}-out`
+            $el.addClass(`slide-center-out`).one(animationend, () => {
                 this.animating = false;
                 this.switchState(state);
             });
-        }, 100);
+        }, 10);
     },
     focusLeft: function() {
         this.focus('left');
@@ -114,7 +127,8 @@ var MainComponent = React.createClass({
     },
     render: function() {
         var content;
-        var stateClasses = `container state-${this.state.state} state-prev-${this.state.prevState} slide-${this.state.prevState}-in`;
+        // var stateClasses = `container state-${this.state.state} state-prev-${this.state.prevState} slide-${this.state.prevState}-in`;
+        var stateClasses = `container state-${this.state.state} state-prev-${this.state.prevState} slide-center-in`;
         if (!this.state.active) {
             stateClasses += ' inactive';
         }

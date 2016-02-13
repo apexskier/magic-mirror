@@ -1,14 +1,14 @@
 .component {
   cursor: default;
   opacity: 1;
-  transition: opacity .5s, transform .5s, color .5s;
+  transition: opacity .6s, transform .6s, color .6s;
 
   .inactive & {
-    opacity: 0.2;
+    opacity: 0;
     transition: opacity 2s, transform 2s, color 2s;
 
     &.component-primary {
-      opacity: 0.8;
+      opacity: 0.5;
     }
   }
 }

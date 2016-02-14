@@ -52,7 +52,7 @@ var MainComponent = React.createClass({
                 }
             }
         });
-        socket.on('gesture', (data) => {
+        /* socket.on('gesture', (data) => {
             this.goActive();
             switch (data.direction) {
             case 'left':
@@ -80,7 +80,7 @@ var MainComponent = React.createClass({
             default:
                 break;
             }
-        });
+        }); */
     },
     componentWillUnmount: function() {
         socket.off('activate');

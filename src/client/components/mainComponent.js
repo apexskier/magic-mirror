@@ -39,7 +39,7 @@ var MainComponent = React.createClass({
         socket.on('gesture', (data) => {
             this.goActive();
             if (data.type === 'generic') {
-                switch (this.props.state) {
+                switch (this.state.state) {
                 case 'center':
                     this.focusRight();
                     break;

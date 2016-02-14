@@ -15,20 +15,22 @@ parser = argparse.ArgumentParser(description='Do fancy OpenCV stuff')
 parser.add_argument('--preview', action='store_true')
 args = parser.parse_args()
 
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='[%(levelname)s|%(asctime)s] %(message)s', level=logging.WARNING, datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger('magicmirror')
+logger.setLevel(logging.DEBUG)
+
+logger.info('starting socketio...')
+io = SocketIO('localhost', 8101)
+io_namespace = io.define(BaseNamespace, '/vision')
 
 resolution = (320, 240)
-api_root = 'http://localhost:8102'
-
-# initialize camera
-print('initializing camera...')
-camera = PiCamera()
-camera.resolution = resolution
-camera.framerate = 30 # max framerate
-rawCapture = PiRGBArray(camera, size=resolution)
-# give camera time to start up
-time.sleep(0.1)
-capture = cv2.VideoCapture(0)
+box_size = (.3, .5)
+box_w = int(box_size[0] * resolution[0])
+box_h = int(box_size[1] * resolution[1])
+box_x = int((resolution[0] - box_w) / 2)
+box_y = int((resolution[1] - box_h) / 2)
+box_top_left = (box_x, box_y)
+box_bot_right = (box_w + box_x, box_h + box_y)
 
 face_cascade = cv2.CascadeClassifier(path.join(path.dirname(__file__), 'haarcascade_frontalface_default.xml'))
 
@@ -104,17 +106,33 @@ class RateLimit(object):
         self.func = func
         self.last_called = 0 # forever ago
 
-    def __call__(self):
+    def __call__(self, *args, **kwargs):
         now = time.time()
         if now - self.last_called > self.min_time:
-            self.func()
+            self.func(*args, **kwargs)
             self.last_called = now
 
 
-print('starting socketio...')
-io = SocketIO('localhost', 8101)
-io_namespace = io.define(BaseNamespace, '/vision')
+class WaitLimit(RateLimit):
+    """
+    Same functionality as RateLimit, but it sets timeout every time called.
+    This means the delay between any execution is greater than time.
+    """
+    def __call__(self, *args, **kwargs):
+        now = time.time()
+        if now - self.last_called > self.min_time:
+            self.func(*args, **kwargs)
+        self.last_called = now
 
+
+def _fpsLogger(t):
+    logger.debug('fps: {}'.format(1 / t))
+fpsLogger = RateLimit(_fpsLogger, 5)
+
+def _wave():
+    logger.debug('wave')
+    io_namespace.emit('gesture', 'wave')
+wave = WaitLimit(_wave, 2)
 
 # continous data
 first_frame = True
@@ -124,77 +142,89 @@ first_saw_face = 0
 last_action = 0
 last_fps = 0
 
+# initialize camera
+print('initializing camera...')
+with PiCamera() as camera:
+    # give camera time to start up
+    time.sleep(1)
 
-print('starting capture...')
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    now = time.time()
-    if not running:
-        break
+    camera.resolution = resolution
+    camera.framerate = 30 # max framerate
 
-    image = frame.array
-    if args.preview:
-        preview = image.copy()
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    with PiRGBArray(camera, size=resolution) as stream:
+        logger.info('starting capture...')
+        for frame in camera.capture_continuous(stream, format="bgr", use_video_port=True):
+            now = time.time()
+            if not running:
+                break
 
-    # face detection
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            image = frame.array
+            if args.preview:
+                preview = image.copy()
+                cv2.rectangle(preview, box_top_left, box_bot_right, (0, 255, 0), 1)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # img[y: y + h, x: x + w]
 
-    num_faces = len(faces)
-    if num_faces:
-        io_namespace.emit('faces', [{
-            'x': x,
-            'y': y,
-            'w': w,
-            'h': h
-        } for (x, y, w, h) in faces])
+            # face detection
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-        if args.preview:
-            for (x, y, w, h) in faces:
-                cv2.rectangle(preview, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            num_faces = len(faces)
+            if num_faces:
+                io_namespace.emit('faces', [{
+                    'x': x / resolution[0],
+                    'y': y / resolution[1],
+                    'w': w / resolution[0],
+                    'h': h / resolution[1]
+                } for (x, y, w, h) in faces])
 
-        # Record some data about the face being seen
-        last_seen_face = now
-        if not seeing_face:
-            first_saw_face = now
-            logging.info('{} Face{} found', num_faces, 's' if num_faces == 1 else '')
-        seeing_face = num_faces
-    else:
-        # timeout for a face to really be gone
-        # this accounts for not recognizing a face for a frame or two at a time
-        if now - last_seen_face > 1:
-            if seeing_face:
-                logging.info('Face lost')
-            seeing_face = 0
+                if args.preview:
+                    for (x, y, w, h) in faces:
+                        cv2.rectangle(preview, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-    if first_frame:
-        fps = None
-    else:
-        frame_time = now - last_frame_time
-        if fps is None:
-            fps = frame_time
-        else:
-            fps = (fps + frame_time) / 2
+                # Record some data about the face being seen
+                last_seen_face = now
+                if not seeing_face:
+                    first_saw_face = now
+                if seeing_face != num_faces:
+                    logger.info('{} Face{} found'.format(num_faces, 's' if num_faces == 1 else ''))
+                seeing_face = num_faces
+            else:
+                # timeout for a face to really be gone
+                # this accounts for not recognizing a face for a frame or two at a time
+                if now - last_seen_face > 1:
+                    if seeing_face:
+                        logger.info('Face lost')
+                    seeing_face = 0
 
-        if now - last_fps > 1:
-            logging.debug('fps: {}'.format(1 / frame_time))
-            last_fps = now
+            if first_frame:
+                fps = None
+            else:
+                frame_time = now - last_frame_time
+                if fps is None:
+                    fps = frame_time
+                else:
+                    fps = (fps + frame_time) / 2
+                fpsLogger(frame_time)
 
-        hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
-        print(hist.shape)
-        (means, stds) = cv2.meanStdDev(image)
+                box_image = image[box_top_left[1]:box_bot_right[1], box_top_left[0]:box_bot_right[0]]
+                (means, stds) = cv2.meanStdDev(box_image)
+                stdsum = int(np.sum(stds))
+                # print('|-{} {}'.format(''.join(['-'] * int(stdsum / 10)), stdsum))
+                if seeing_face:
+                    if stdsum < 10:
+                        wave()
 
-    if args.preview:
-        cv2.imshow('Preview', preview)
-        #if not first_frame:
-        #    cv2.imshow('Data', diff_image)
+            if args.preview:
+                cv2.imshow('Preview', preview)
+                #if not first_frame:
+                #    cv2.imshow('Data', diff_image)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        running = False
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                running = False
 
-    first_frame = False
-    last_frame_time = now
-    fps = 0
-    last_image = image.copy()
-    # clear the stream for next frame
-    rawCapture.truncate(0)
+            first_frame = False
+            last_frame_time = now
+            fps = 0
+            # clear the stream for next frame
+            stream.seek(0)
+            stream.truncate()
 

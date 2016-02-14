@@ -11,7 +11,6 @@ var client = new Twitter(apiKeys);
 function get(req, res) {
     tweetCache(function(resolve) {
         resolve(trendCache(function(resolve, reject) {
-            // return resolve(mockData);
             client.get('trends/closest', {
                 lat: 47.6150436,
                 long: -122.1717577
@@ -61,6 +60,8 @@ function get(req, res) {
             data: data
         });
     }).catch(function(data) {
+        tweetCache.clear();
+        trendCache.clear();
         res.status(500).json({
             status: 'error',
             data: data

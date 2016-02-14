@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 logging.basicConfig(format='[%(levelname)s|%(asctime)s] %(message)s', level=logging.WARNING, datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger('magicmirror')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 logger.info('starting socketio...')
 io = SocketIO('localhost', 8101)
@@ -143,7 +143,7 @@ last_action = 0
 last_fps = 0
 
 # initialize camera
-print('initializing camera...')
+logger.info('initializing camera...')
 with PiCamera() as camera:
     # give camera time to start up
     time.sleep(1)

@@ -1,0 +1,11 @@
+# cron
+
+# sets up tv power on/off
+# power off when I'm at work (mon-fri 9am - 5pm)
+# and when I'm asleep (11pm - 6:30am)
+
+30 6 * * * ~/magic-mirror/scripts/tv.sh on
+0 9 * * 1-5 ~/magic-mirror/scripts/tv.sh off
+0 17 * * 1-5 ~/magic-mirror/scripts/tv.sh on
+0 23 * * * ~/magic-mirror/scripts/tv.sh off
+

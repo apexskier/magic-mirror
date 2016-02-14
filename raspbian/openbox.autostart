@@ -6,4 +6,4 @@ xsetroot -solid black
 
 unclutter &
 
-~/magic-mirror/startup.sh &
+~/magic-mirror/scripts/startup.sh &

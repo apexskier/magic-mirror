@@ -82,8 +82,15 @@ POWERDOWN_TIME=0
 
 https://github.com/Airblader/unclutter-xfixes
 
-I had to hack the makefile to disable man page generation. Even after installing
-asciidocs there were failures when linting the xml file.
+I had to hack the makefile to disable man page generation. Even after
+installing asciidocs there were failures when linting the xml file.
+
+**Setup TV Power Schedule**
+
+`tv.cron` contains the cronjobs to turn the tv on and off to save power. Edit
+it as you please and run the following (or do it manually) to set up.
+
+`crontab -l | cat - tv.cron | crontab -`
 
 ## Dev Resources
 

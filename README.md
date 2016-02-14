@@ -57,6 +57,13 @@ For the Raspberry Pi 2, use the ARMv7 node build.
 
 https://nodejs.org/en/download/stable/
 
+**Build Client**
+
+```sh
+npm install
+$(npm bin)/gulp build
+```
+
 **Configure Display**
 
 `/boot/config.txt`

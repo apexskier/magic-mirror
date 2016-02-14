@@ -2,6 +2,7 @@ import argparse
 import logging
 from os import path
 import signal
+import subprocess
 import sys
 import time
 
@@ -17,7 +18,7 @@ args = parser.parse_args()
 
 logging.basicConfig(format='[%(levelname)s|%(asctime)s] %(message)s', level=logging.WARNING, datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger('magicmirror')
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 logger.info('starting socketio...')
 io = SocketIO('localhost', 8101)
@@ -32,7 +33,8 @@ box_y = int((resolution[1] - box_h) / 2)
 box_top_left = (box_x, box_y)
 box_bot_right = (box_w + box_x, box_h + box_y)
 
-face_cascade = cv2.CascadeClassifier(path.join(path.dirname(__file__), 'haarcascade_frontalface_default.xml'))
+current_dir = path.dirname(__file__)
+face_cascade = cv2.CascadeClassifier(path.join(current_dir, 'haarcascade_frontalface_default.xml'))
 
 # enable safe shutdown with ctl+c
 global running
@@ -134,6 +136,12 @@ def _wave():
     io_namespace.emit('gesture', {'type': 'generic'})
 wave = WaitLimit(_wave, 2)
 
+def _wakeTv():
+    # if someone looks at this in the middle of the night, turn on and let cron
+    # turn it off at the next opportunity
+    subprocess.call(' '.join([path.join(current_dir, '..', 'scripts', 'tv.sh'), 'on']), shell=True)
+wakeTv = WaitLimit(_wakeTv, 60)
+
 # continous data
 first_frame = True
 seeing_face = 0
@@ -185,14 +193,15 @@ with PiCamera() as camera:
                 if not seeing_face:
                     first_saw_face = now
                 if seeing_face != num_faces:
-                    logger.info('{} Face{} found'.format(num_faces, 's' if num_faces == 1 else ''))
+                    logger.info('{} face{} found'.format(num_faces, '' if num_faces == 1 else 's'))
                 seeing_face = num_faces
+                wakeTv()
             else:
                 # timeout for a face to really be gone
                 # this accounts for not recognizing a face for a frame or two at a time
                 if now - last_seen_face > 1:
                     if seeing_face:
-                        logger.info('Face lost')
+                        logger.info('face lost')
                     seeing_face = 0
 
             if first_frame:

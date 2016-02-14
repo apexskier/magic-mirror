@@ -130,8 +130,8 @@ def _fpsLogger(t):
 fpsLogger = RateLimit(_fpsLogger, 5)
 
 def _wave():
-    logger.debug('wave')
-    io_namespace.emit('gesture', 'wave')
+    logger.info('gesture')
+    io_namespace.emit('gesture', {'type': 'generic'})
 wave = WaitLimit(_wave, 2)
 
 # continous data

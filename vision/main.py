@@ -12,6 +12,16 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from socketIO_client import SocketIO, BaseNamespace
 
+# enable safe shutdown with ctl+c
+global running
+running = True
+
+def signal_handler(signal, frame):
+    global running
+    running = False
+
+signal.signal(signal.SIGINT, signal_handler)
+
 parser = argparse.ArgumentParser(description='Do fancy OpenCV stuff')
 parser.add_argument('--preview', action='store_true')
 args = parser.parse_args()
@@ -35,16 +45,6 @@ box_bot_right = (box_w + box_x, box_h + box_y)
 
 current_dir = path.dirname(__file__)
 face_cascade = cv2.CascadeClassifier(path.join(current_dir, 'haarcascade_frontalface_default.xml'))
-
-# enable safe shutdown with ctl+c
-global running
-running = True
-
-def signal_handler(signal, frame):
-    global running
-    running = False
-
-signal.signal(signal.SIGINT, signal_handler)
 
 
 class MotionObject(object):
@@ -139,7 +139,7 @@ wave = WaitLimit(_wave, 2)
 def _wakeTv():
     # if someone looks at this in the middle of the night, turn on and let cron
     # turn it off at the next opportunity
-    subprocess.call(' '.join([path.join(current_dir, '..', 'scripts', 'tv.sh'), 'on']), shell=True)
+    subprocess.Popen(' '.join([path.join(current_dir, '..', 'scripts', 'tv.sh'), 'on']), shell=True, stderr=subprocess.STDOUT)
 wakeTv = WaitLimit(_wakeTv, 60)
 
 # continous data

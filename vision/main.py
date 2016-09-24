@@ -32,7 +32,9 @@ logger.setLevel(logging.INFO)
 
 logger.info('starting socketio...')
 io = SocketIO('localhost', 8101)
+io2 = SocketIO('localhost', 8104)
 io_namespace = io.define(BaseNamespace, '/vision')
+io_namespace2 = io2.define(BaseNamespace, '/vision')
 
 resolution = (320, 240)
 box_size = (.3, .5)
@@ -45,6 +47,18 @@ box_bot_right = (box_w + box_x, box_h + box_y)
 
 current_dir = path.dirname(__file__)
 face_cascade = cv2.CascadeClassifier(path.join(current_dir, 'haarcascade_frontalface_default.xml'))
+
+
+def mse(imageA, imageB):
+    # the 'Mean Squared Error' between the two images is the
+    # sum of the squared difference between the two images;
+    # NOTE: the two images must have the same dimension
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+
+    # return the MSE, the lower the error, the more "similar"
+    # the two images are
+    return err
 
 
 class MotionObject(object):
@@ -131,10 +145,11 @@ def _fpsLogger(t):
     logger.debug('fps: {}'.format(1 / t))
 fpsLogger = RateLimit(_fpsLogger, 5)
 
-def _wave():
-    logger.info('gesture')
-    io_namespace.emit('gesture', {'type': 'generic'})
-wave = WaitLimit(_wave, 2)
+def _triggerMotion(val):
+    logger.info('motion')
+    io_namespace.emit('motion', {'val': val})
+    io_namespace2.emit('motion', {'val': val})
+triggerMotion = RateLimit(_triggerMotion, 2)
 
 def _wakeTv():
     # if someone looks at this in the middle of the night, turn on and let cron
@@ -149,6 +164,7 @@ last_seen_face = 0
 first_saw_face = 0
 last_action = 0
 last_fps = 0
+last_image = None
 
 # initialize camera
 logger.info('initializing camera...')
@@ -169,7 +185,6 @@ with PiCamera() as camera:
             image = frame.array
             if args.preview:
                 preview = image.copy()
-                cv2.rectangle(preview, box_top_left, box_bot_right, (0, 255, 0), 1)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # img[y: y + h, x: x + w]
 
             # face detection
@@ -178,6 +193,12 @@ with PiCamera() as camera:
             num_faces = len(faces)
             if num_faces:
                 io_namespace.emit('faces', [{
+                    'x': x / resolution[0],
+                    'y': y / resolution[1],
+                    'w': w / resolution[0],
+                    'h': h / resolution[1]
+                } for (x, y, w, h) in faces])
+                io_namespace2.emit('faces', [{
                     'x': x / resolution[0],
                     'y': y / resolution[1],
                     'w': w / resolution[0],
@@ -195,7 +216,7 @@ with PiCamera() as camera:
                 if seeing_face != num_faces:
                     logger.info('{} face{} found'.format(num_faces, '' if num_faces == 1 else 's'))
                 seeing_face = num_faces
-                wakeTv()
+                #wakeTv()
             else:
                 # timeout for a face to really be gone
                 # this accounts for not recognizing a face for a frame or two at a time
@@ -214,24 +235,27 @@ with PiCamera() as camera:
                     fps = (fps + frame_time) / 2
                 fpsLogger(frame_time)
 
-                box_image = image[box_top_left[1]:box_bot_right[1], box_top_left[0]:box_bot_right[0]]
-                (means, stds) = cv2.meanStdDev(box_image)
+                processedImage = cv2.GaussianBlur(gray, (21, 21), 0)
+                processedImage = cv2.absdiff(last_image, gray)
+                processedImage = cv2.threshold(processedImage, 25, 255, cv2.THRESH_BINARY)[1]
+                (means, stds) = cv2.meanStdDev(processedImage)
                 stdsum = int(np.sum(stds))
-                # print('|-{} {}'.format(''.join(['-'] * int(stdsum / 10)), stdsum))
-                if seeing_face:
-                    if stdsum < 10:
-                        wave()
+                # print('|-{}'.format(''.join(['-'] * int(stdsum))), means, stds, stdsum)
 
-            if args.preview:
-                cv2.imshow('Preview', preview)
-                #if not first_frame:
-                #    cv2.imshow('Data', diff_image)
+                if stdsum > 2:
+                    triggerMotion(stdsum)
+
+                if args.preview:
+                    cv2.imshow('Preview', processedImage)
+                    #if not first_frame:
+                    #    cv2.imshow('Data', diff_image)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 running = False
 
             first_frame = False
             last_frame_time = now
+            last_image = gray
             fps = 0
             # clear the stream for next frame
             stream.seek(0)
